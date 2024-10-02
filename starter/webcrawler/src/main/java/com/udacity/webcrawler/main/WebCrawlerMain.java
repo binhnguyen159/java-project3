@@ -37,40 +37,23 @@ public final class WebCrawlerMain {
     CrawlResult result = crawler.crawl(config.getStartPages());
     CrawlResultWriter resultWriter = new CrawlResultWriter(result);
     // TODO: Write the crawl results to a JSON file (or System.out if the file name is empty)
-//    if(!config.getResultPath().isEmpty()){
-//      Path path = Path.of(config.getResultPath());
-//      resultWriter.write(path);
-//    }else{
-//      try(Writer outputCrawler = new OutputStreamWriter(System.out)) {
-//        resultWriter.write(outputCrawler);
-//      }
-//    }
-//
-//    // TODO: Write the profile data to a text file (or System.out if the file name is empty)
-//    if(!config.getProfileOutputPath().isEmpty()){
-//      Path path = Path.of(config.getProfileOutputPath());
-//      profiler.writeData(path);
-//    }else{
-//      try(Writer profilerOutput  = new OutputStreamWriter(System.out)){
-//        profiler.writeData(profilerOutput);
-//      }
-//    }
-    String crawResultPath = config.getResultPath();
-    if(!crawResultPath.isEmpty()){
-      Path path = Path.of(crawResultPath);
+    if(!config.getResultPath().isEmpty()){
+      Path path = Path.of(config.getResultPath());
       resultWriter.write(path);
-    } else {
-      Writer crawOutputWriter = new OutputStreamWriter(System.out);
-      resultWriter.write(crawOutputWriter);
+    }else{
+      try(Writer outputCrawler = new OutputStreamWriter(System.out)) {
+        resultWriter.write(outputCrawler);
+      }
     }
-    String profileResultPath = config.getProfileOutputPath();
-    if(!profileResultPath.isEmpty()){
-      Path path = Path.of(profileResultPath);
+
+    // TODO: Write the profile data to a text file (or System.out if the file name is empty)
+    if(!config.getProfileOutputPath().isEmpty()){
+      Path path = Path.of(config.getProfileOutputPath());
       profiler.writeData(path);
-    } else {
-      Writer profileOutputWriter = new OutputStreamWriter(System.out);
-      profiler.writeData(profileOutputWriter);
-      profileOutputWriter.flush();
+    }else{
+      try(Writer profilerOutput  = new OutputStreamWriter(System.out)){
+        profiler.writeData(profilerOutput);
+      }
     }
   }
 
@@ -81,6 +64,7 @@ public final class WebCrawlerMain {
     }
 
     CrawlerConfiguration config = new ConfigurationLoader(Path.of(args[0])).load();
+    System.out.println("321321321231"+args[0]);
     new WebCrawlerMain(config).run();
   }
 }
