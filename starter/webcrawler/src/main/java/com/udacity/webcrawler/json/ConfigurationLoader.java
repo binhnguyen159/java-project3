@@ -51,8 +51,8 @@ public final class ConfigurationLoader {
       return objectMapper.readValue(inputReader, CrawlerConfiguration.Builder.class)
               .build();
     } catch (Exception ex){
-      ex.getLocalizedMessage();
-      throw new RuntimeException(ex);
+        ex.getLocalizedMessage();
+        throw new RuntimeException(ex);
     }
   }
 }
