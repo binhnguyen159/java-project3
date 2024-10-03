@@ -31,7 +31,7 @@ public final class InternalCrawlerTask extends RecursiveTask<Boolean> {
             Clock clock,
             PageParserFactory parserFactory,
             List<Pattern> ignoredUrls
-    ){
+    ) {
         this.url = url;
         this.dueTime = dueTime;
         this.maxDepth = maxDepth;
@@ -43,27 +43,27 @@ public final class InternalCrawlerTask extends RecursiveTask<Boolean> {
     }
 
     @Override
-    protected synchronized Boolean compute(){
-        if(maxDepth == 0 || clock.instant().isAfter((dueTime))){
+    protected synchronized Boolean compute() {
+        if (maxDepth == 0 || clock.instant().isAfter((dueTime))) {
             return false;
         }
-        for(Pattern pattern: ignoredUrls){
-            if(pattern.matcher(url).matches()){
+        for (Pattern pattern : ignoredUrls) {
+            if (pattern.matcher(url).matches()) {
                 return false;
             }
         }
-        if(urlsVisited.contains(url)){
-               return false;
+        if (urlsVisited.contains(url)) {
+            return false;
         }
         urlsVisited.add(url);
 
         PageParser.Result result = parserFactory.get(url).parse();
-        for(ConcurrentMap.Entry<String, Integer> e: result.getWordCounts().entrySet()){
-            counts.compute(e.getKey(),(k,v) -> (v == null) ? e.getValue() : e.getValue() +v);
+        for (ConcurrentMap.Entry<String, Integer> e : result.getWordCounts().entrySet()) {
+            counts.compute(e.getKey(), (k, v) -> (v == null) ? e.getValue() : e.getValue() + v);
         }
 
         List<InternalCrawlerTask> subtasks = new ArrayList<>();
-        for(String link: result.getLinks()){
+        for (String link : result.getLinks()) {
             subtasks.add(new InternalCrawlerTask(link, dueTime, maxDepth - 1, counts, urlsVisited, clock, parserFactory, ignoredUrls));
         }
         invokeAll(subtasks);
